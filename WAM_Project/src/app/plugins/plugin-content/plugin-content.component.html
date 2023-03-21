@@ -1,0 +1,30 @@
+<div class="main">
+    <div class="mainUp">
+        <div class="pluginsList" >
+            <!-- <input type="checkbox" name="" id="state"> -->
+            <!-- <label for="state" class="btn"></label> -->
+            <!-- <div  class="clamp text" > -->
+            <div class="pluginItem" *ngFor="let item of pluginsList ">
+                  <h2> {{item.name}}</h2> 
+                 <h6>{{item.description}}</h6> 
+                 <div  *ngIf="item.dirName.match('^wimmics/[a-zA-Z0-9]*_?[a-zA-Z0-9]*'); else dir" ><b id="burns">{{item.dirName}}</b></div> 
+                 <ng-template #dir >
+                    <b id="wimmics">{{item.dirName}}</b>
+                 </ng-template>
+                 <br>
+            <!-- </div> -->
+        </div>
+       
+        </div>
+
+    </div>
+
+    <div class="mainDown">
+        <nav>
+        <div class="recommand"  (click)="tabEvent(0)">Recommand</div>
+        <div class="burnsAudio"   (click)="tabEvent(1)">BurnsAudio</div>
+        <div class="wimmics"        (click)="tabEvent(2)">Wimmics</div>
+        </nav>
+        <router-outlet></router-outlet>
+    </div>
+</div>
