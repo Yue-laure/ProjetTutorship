@@ -50,6 +50,10 @@ nav >div{
     color:rgb(158, 124, 83);
 }
 
+img{
+    max-width: 400px;
+    max-height: 200px;
+}
 /* lire plus et lire moin */
 
 /* .btn{

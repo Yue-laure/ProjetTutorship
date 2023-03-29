@@ -7,6 +7,7 @@
                  <div  *ngIf="item.dirName.match('^wimmics/[a-zA-Z0-9]*_?[a-zA-Z0-9]*'); else dir" >
                     <b id="wimmics">{{item.dirName}}</b><br>
                     <!-- <b>{{imgTable.get(item.name)}}</b><br> -->
+                    <!-- <b>http://localhost:8010/{{item.dirName}}/index.html</b><br> -->
                     <img src="{{imgTable.get(item.name)}}" alt="image can not find">
                 </div> 
                  <ng-template #dir >
@@ -15,6 +16,7 @@
                     <img src="{{imgTable.get(item.name)}}" alt="image can not find">
                 </ng-template>
                  <br>
+
         </div>
        
         </div>

@@ -42,7 +42,10 @@ export class PluginContentComponent {
                 continue
               }
               // console.log(this.imgTable)
+              return this.imgTable
           } )
+
+        
     }
 
 //click event for filscomponent  wimmics and burns-audio
