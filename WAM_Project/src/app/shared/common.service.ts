@@ -10,14 +10,16 @@ export class CommonService {
      burnsList:Array<any>=[];
      wimmicsList:Array<any>=[];
      othersList:Array<any>=[];
-
+     imgList:Array<any>=[];
+     name!: String;
+     thumbnai!: String;
     constructor(){};
 
     async getPlugins(){
       let httpUrl=this.host+ `/api/plugins`;
       let  result=await axios.get(httpUrl);
-    //   // console.log(result.data);
-    //   // console.log(result.data.plugins);
+      // console.log(result.data);
+      // console.log(result.data.plugins);
      return result.data;
     }
 
@@ -31,7 +33,7 @@ export class CommonService {
                   else
                     this.pluginsList.push(res.plugins[index].dirName)
             }
-            console.log(this.pluginsList)
+            // console.log(this.pluginsList)
             return  this.pluginsList
       })
     }
@@ -47,6 +49,7 @@ export class CommonService {
                     this.othersList.push(res.plugins[index].dirName)
             }
       })
+      console.log(this.burnsList)
       return this.burnsList
   }
    
@@ -61,16 +64,7 @@ export class CommonService {
                     this.othersList.push(res.plugins[index].dirName)
             }
       })
+     console.log(this.wimmicsList)
       return this.wimmicsList
     }
-
-    async getPluginByDirName(){
-        //1 burns ,2 wimmics ,-1 others
-      // let httpUrl=this.host+ `/api/_dirName?dirName=${dirName}`
-      // let httpUrl='https://wasabi.i3s.unice.fr/WebAudioPluginBank/repository.json'
-      let httpUrl='https://mainline.i3s.unice.fr/PedalEditor/Back-End/functional-pedals/published'+'/distortion'+'/index.html';
-      let result=await axios.get(httpUrl);
-      // var host = document.querySelector("main");
-      return  result
-    }
-}
+  }

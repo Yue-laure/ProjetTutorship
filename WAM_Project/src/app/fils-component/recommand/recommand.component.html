@@ -1,11 +1,5 @@
 <p>recommand works!</p>
 <div class="recommandItem" *ngFor="let item of pluginsList">
-    <!-- <div [innerHTML]="item.getElementsByClassName('main')"></div>  -->
-    <!-- <div ng-bind-html="item | trusted"></div> -->
     <h3> {{item.data}}</h3> 
- <div *ngIf="myFrame">
-        <iframe  #myFrame>
-        </iframe>
-</div>
-   <!-- <p>{{item}}</p>  -->
+   <p>{{item}}</p> 
 </div>
