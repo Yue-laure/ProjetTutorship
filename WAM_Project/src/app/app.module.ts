@@ -15,6 +15,7 @@ import { LoginComponent } from './plugins/login/login.component';
 import { PluginWimmicsComponent } from './fils-component/plugin-wimmics/plugin-wimmics.component';
 import { PluginBurnsAudioComponent } from './fils-component/plugin-burns-audio/plugin-burns-audio.component';
 import { RecommandComponent } from './fils-component/recommand/recommand.component';
+import { PluginDetailComponent } from './plugins/plugin-detail/plugin-detail.component';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import { RecommandComponent } from './fils-component/recommand/recommand.compone
     LoginComponent,
     PluginWimmicsComponent,
     PluginBurnsAudioComponent,
-    RecommandComponent
+    RecommandComponent,
+    PluginDetailComponent
   ],
   imports: [
     BrowserModule,

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import axios from 'axios';
 
 @Injectable({
@@ -6,5 +7,7 @@ import axios from 'axios';
 })
 export class PluginDetailService {
 
-  constructor() { }
+  constructor(private router:Router) { 
+    this.router.navigate(['/plugin-Detail',URL]);
+  }
 }

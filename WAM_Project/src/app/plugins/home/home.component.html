@@ -1,4 +1,14 @@
  <p>home works!</p>
-<div *ngFor="let item of list">
-    {{item}}
+    <div class="pluginItem" *ngFor="let item of pluginsList ">
+        <h2> {{item.name}}</h2> 
+        <h6>{{item.description}}</h6> 
+         <div  *ngIf="item.dirName.match('^wimmics/[a-zA-Z0-9]*_?[a-zA-Z0-9]*'); else dir" >
+            <b id="wimmics">{{item.dirName}}</b><br>
+            <!-- <b>http://localhost:8010/{{item.dirName}}/index.html</b><br> -->
+        </div> 
+         <ng-template #dir >
+            <b id="burns">{{item.dirName}}</b><br>
+            <!-- <b>{{imgTable.get(item.name)}}</b><br> -->
+        </ng-template>
+         <br>
 </div>

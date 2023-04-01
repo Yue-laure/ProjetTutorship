@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { UrlSegment } from '@angular/router';
 import axios from 'axios';
 
 import { CommonService } from "../../shared/common.service";
@@ -8,24 +9,29 @@ import { CommonService } from "../../shared/common.service";
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
-    constructor(public common:CommonService){}
 
-    public list:any[]=[];
+    constructor(public communSer:CommonService,){}
+
+    pluginsList:Array<any>=[];
 
     async ngOnInit(){
-        let httpUrl="https://webaudiomodules.org/repository.json"
-        let result=await axios.get(httpUrl);
-        console.log(result.data.plugs)
-        for (let index = 0; index< result.data.plugs.length; index++){
-                   this.list.push(result.data.plugs[index])   
-                   console.log(result.data.plugs[index])
-                   console.log(result.data.plugs)
-        }
+      this.communSer.getPlugins().then(async (res)=>{
+        //object dans object  n est pas stable ,si il n affiche pas ,utiliser les codes suivants
+        // for (let index = 0; index < res.plugins.length; index++) {
+        //   this.pluginsList.push(res.plugins[index])
+        // }
+        this.pluginsList=res.plugins
+        for (let index = 0; index < res.plugins.length; index++) {
+          var item=this.pluginsList[index]
+          if(item.dirName.match('^wimmics/[a-zA-Z0-9]*_?[a-zA-Z0-9]*'))
+           var pluginUrl ="http://localhost:8010/"+item.dirName+"/index.html"
+           else
+           var pluginUrl ="http://localhost:8010/"+item.dirName+"/index.js"
 
-        // console.log(result.data.plugs)
-        console.log(this.list)
-       this.list= result.data.plugs
-        return  result.data.plugs
+          console.log(pluginUrl)
+          
+      }
+      })
       
         }        
 

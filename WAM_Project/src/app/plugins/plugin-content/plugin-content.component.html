@@ -6,19 +6,17 @@
                 <h6>{{item.description}}</h6> 
                  <div  *ngIf="item.dirName.match('^wimmics/[a-zA-Z0-9]*_?[a-zA-Z0-9]*'); else dir" >
                     <b id="wimmics">{{item.dirName}}</b><br>
-                    <!-- <b>{{imgTable.get(item.name)}}</b><br> -->
-                    <!-- <b>http://localhost:8010/{{item.dirName}}/index.html</b><br> -->
-                    <img src="{{imgTable.get(item.name)}}" alt="image can not find">
+                    <a #url [href]="getSafeUrl(item.dirName)" style="display: none">{{'http://localhost:8010/'+item.dirName+'/index.html'}}</a>
+                    <button (click)="safeUrl=showUrl(url.href)" ><img src="{{imgTable.get(item.name)}}" alt="image can not find"></button>
+           
                 </div> 
                  <ng-template #dir >
                     <b id="burns">{{item.dirName}}</b><br>
-                    <!-- <b>{{imgTable.get(item.name)}}</b><br> -->
-                    <img src="{{imgTable.get(item.name)}}" alt="image can not find">
+                    <button> <img src="{{imgTable.get(item.name)}}" alt="image can not find"></button>
                 </ng-template>
                  <br>
-
         </div>
-       
+        <div *ngIf="toDisplay" ><app-plugin-detail [safeUrl]="safeUrl"></app-plugin-detail></div>     
         </div>
 
     </div>
