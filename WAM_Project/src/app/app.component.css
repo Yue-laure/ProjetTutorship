@@ -1,3 +1,9 @@
+.main{
+  width: 960px;
+  margin: 0 auto;
+  position: relative;
+  display: flex;
+}
 header {
   min-width: 960px;
   height: 58px;
@@ -57,3 +63,4 @@ header {
   /* font-size: 20px; */
   font-weight: bold;
 }
+

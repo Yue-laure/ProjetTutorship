@@ -1,14 +1,26 @@
- <p>home works!</p>
-    <div class="pluginItem" *ngFor="let item of pluginsList ">
-        <h2> {{item.name}}</h2> 
-        <h6>{{item.description}}</h6> 
-         <div  *ngIf="item.dirName.match('^wimmics/[a-zA-Z0-9]*_?[a-zA-Z0-9]*'); else dir" >
-            <b id="wimmics">{{item.dirName}}</b><br>
-            <!-- <b>http://localhost:8010/{{item.dirName}}/index.html</b><br> -->
-        </div> 
-         <ng-template #dir >
-            <b id="burns">{{item.dirName}}</b><br>
-            <!-- <b>{{imgTable.get(item.name)}}</b><br> -->
-        </ng-template>
-         <br>
+<div class="main">
+    <div class="mainLeft">
+        <div class="pluginsList" >
+            <div class="pluginItem" *ngFor="let item of pluginsList ">
+                <h2> {{item.name}}</h2> 
+                <h6>{{item.description}}</h6> 
+                 <div  *ngIf="item.dirName.match('^wimmics/[a-zA-Z0-9]*_?[a-zA-Z0-9]*'); else dir" >
+                    <b id="wimmics">{{item.dirName}}</b><br>
+                    <a #url [href]="getSafeUrl(item.dirName)" style="display: none">{{'http://localhost:8010/'+item.dirName+'/index.html'}}</a>
+                    <button (click)="safeUrl=showUrl(url.href)" ><img src="{{imgTable.get(item.name)}}" alt="image can not find"></button>
+                </div> 
+                 <ng-template #dir >
+                    <b id="burns">{{item.dirName}}</b><br>
+                    <a #url [href]="getSafeUrl(item.dirName)" style="display: none">{{'http://localhost:8010/'+item.dirName+'/index.html'}}</a>
+                    <button  (click)="safeUrl=showUrl(url.href)"> <img src="{{imgTable.get(item.name)}}" alt="image can not find"></button>
+                </ng-template>
+                 <br>
+        </div>  
+        </div>
+    </div>
+
+    <div class="mainRight">
+        <p>Please click on the image of  plugin!!!!</p>
+        <div *ngIf="toDisplay" ><app-plugin-detail [safeUrl]="safeUrl"></app-plugin-detail></div>   
+    </div>
 </div>

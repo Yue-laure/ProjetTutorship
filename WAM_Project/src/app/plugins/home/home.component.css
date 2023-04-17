@@ -1,6 +1,50 @@
-#appearZone {
-    float: left;
-    width: 65%;
-    display: flex;
-    padding-left: 5%;
-  }
+
+.main{
+  width: 960px;
+  margin: 0 auto;
+  position: relative;
+  display: flex;
+}
+
+/* .mainLeft .mainRight{
+  position: absolute;
+  width: 50%;
+  margin: 0 auto;
+} */
+.mainRight{
+  left: 75%;
+  position: fixed;
+}
+/* .pluginsList{
+  display: flex;
+  overflow: hidden;
+}  */
+.pluginItem{
+  padding: 5px 25px;
+  box-shadow: 0 5px 20px 3px #ccc;
+  border-radius: 5px;
+  position: relative;
+    
+}
+.pluginItem >h2 {
+  /* width: calc(960px/5); */
+  font-size: 14px;
+  margin: 5px  0px ;
+}
+.pluginItem >p{
+  /* width: calc(960px/5); */
+  font-size: 14px;
+  margin: 5px 0px;
+}
+#burns{
+  color:rgb(108, 175, 122);
+}
+
+#wimmics{
+  color:rgb(158, 124, 83);
+}
+
+img{
+  max-width: 400px;
+  max-height: 200px;
+}

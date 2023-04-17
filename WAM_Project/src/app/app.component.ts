@@ -1,13 +1,19 @@
-import { Component } from '@angular/core';
-
+import { Component, ViewChild } from '@angular/core';
+import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
+import { ActivatedRoute, Router } from '@angular/router';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+
   title = 'WAM_Project';
-  constructor(  ){}
+  @ViewChild(MatMenuTrigger) menuTrigger!: MatMenuTrigger;
+  onMenuItemClick() {
+    this.menuTrigger.openMenu();
+  }
+  constructor( public router:Router,public route:ActivatedRoute,  ){}
 
   ngOnInit(){
       /** * partager au facebook
@@ -42,5 +48,11 @@ export class AppComponent {
 
   }
 
-
+//click event for filscomponent  wimmics and burns-audio
+tabEvent(index:number){
+  let pathList=[' ','plugin-burns','plugin-wimmics'];
+  // this.router.navigate(['/home',pathList[index],
+  this.router.navigate([pathList[index],
+  ]);
+}  
 }

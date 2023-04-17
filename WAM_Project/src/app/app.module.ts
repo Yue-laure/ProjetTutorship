@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { PluginContentComponent } from './plugins/plugin-content/plugin-content.component';
 import { HomeComponent } from './plugins/home/home.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -17,11 +16,12 @@ import { PluginBurnsAudioComponent } from './fils-component/plugin-burns-audio/p
 import { RecommandComponent } from './fils-component/recommand/recommand.component';
 import { PluginDetailComponent } from './plugins/plugin-detail/plugin-detail.component';
 
+import { MatMenuModule } from '@angular/material/menu';
+
 
 @NgModule({
   declarations: [
     AppComponent,
-    PluginContentComponent,
     HomeComponent,
     LoginComponent,
     PluginWimmicsComponent,
@@ -33,7 +33,8 @@ import { PluginDetailComponent } from './plugins/plugin-detail/plugin-detail.com
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    MatToolbarModule,MatIconModule,MatCardModule,MatFormFieldModule,FormsModule
+    MatToolbarModule,MatIconModule,MatCardModule,MatFormFieldModule,FormsModule,
+    MatMenuModule
   ],
   providers: [],
   bootstrap: [AppComponent]

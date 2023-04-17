@@ -2,7 +2,15 @@
   <div class="nav">
     <div class="navList">
       <div class="navItem" [routerLink]="['/']" routerLink="router-link-active">Home</div>
-      <div class="navItem" [routerLink]="['/plugin-content']" routerLink="router-link-active">Plugin</div>
+      <!-- <div class="navItem"   [routerLink]="['/plugin-content']" routerLink="router-link-active"> -->
+          <div class="navItem" >
+            <a mat-button [matMenuTriggerFor]="menu">Plugin</a>
+        </div>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item  class="recommand"  (click)="tabEvent(0)">Recommand</button>
+          <button mat-menu-item  class="BurnsAudio"  (click)="tabEvent(1)">BurnsAudio</button>
+          <button mat-menu-item  class="Wimmics"  (click)="tabEvent(2)">Wimmics</button>
+        </mat-menu>
     </div>
     <div class="navSearch">
       <input placeholder="Search by name of  Plugin " type="text" class="search" >
@@ -23,5 +31,4 @@
     </button>
   </div>
 </header>
-
-<router-outlet></router-outlet>
+<div class="main"><router-outlet></router-outlet></div>
