@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -27,15 +27,16 @@ import { MatMenuModule } from '@angular/material/menu';
     PluginWimmicsComponent,
     PluginBurnsAudioComponent,
     RecommandComponent,
-    PluginDetailComponent
+    PluginDetailComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     MatToolbarModule,MatIconModule,MatCardModule,MatFormFieldModule,FormsModule,
-    MatMenuModule
+    MatMenuModule,
   ],
+  schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   providers: [],
   bootstrap: [AppComponent]
 })

@@ -22,7 +22,12 @@
     "lib": [
       "ES2022",
       "dom"
-    ]
+    ],
+    "allowJs": true,
+    // "paths": {
+    //   "@webaudiomodules/api": ["node_modules/@webaudiomodules/api"],
+
+    // }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

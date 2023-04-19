@@ -1,7 +1,9 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
 import axios from 'axios';
 import { CommonService } from "../../shared/common.service";
+// ­­import { WamHost } from "../../../assets/wamHost/wamHost.js"
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -32,7 +34,7 @@ export class HomeComponent {
            var pluginUrl ="please make sure index.html in the repo of plugins "
       }
       })
-           //obtenir le lien de image en utilisant un dictionnaire 
+           //obtenir le lien de image en utilisant un dictionnaire
            this.communSer.getPlugins().then(async (res)=>{
             //object dans object  n est pas stable ,si il n affiche pas ,utiliser les codes suivants
             // for (let index = 0; index < res.plugins.length; index++) {
@@ -46,33 +48,50 @@ export class HomeComponent {
               if (result.data.thumbnail)
                {
                 if (result.data.thumbnail=="screenshot.png")
+                {
                   this.thumbnail=this.communSer.host+'/'+res.plugins[index].dirName+'/screenshot.png'
+                  }
                 else
-                this.thumbnail=this.communSer.host+'/'+res.plugins[index].dirName+'/default.png'
+                {
+                  this.thumbnail=this.communSer.host+'/'+res.plugins[index].dirName+'/default.png'
+                  }
                 this.imgTable.set(this.name,this.thumbnail)
               }
-              else
-                console.log("image est vide"+result.data.thumbnail)
-                continue
-              }
+              // result.data.thumbnail est vide
+              else if (result.data.thumbnail=="")
+              {
+                this.thumbnail=this.communSer.host+'/'+res.plugins[index].dirName+'/default.png'
+                this.imgTable.set(this.name,this.thumbnail)
+                }
+            }
               // console.log(this.imgTable)
               return this.imgTable
           } )
-        }        
+        }
 
-  
+
+    public getUrl(dirname: String) : String {
+      return `http://localhost:8010/${dirname}/index.js`;
+    }
+
     public getSafeUrl(dirname: string): SafeUrl {
-        const url = `http://localhost:8010/${dirname}/index.html`;
+        const url = `http://localhost:8010/${dirname}/index.js`;
+
         const trimmedUrl = url?.trim();
         return this.sanitizer.bypassSecurityTrustUrl(url);
-      
+
     }
     public showUrl(url: string): SafeResourceUrl {
-      console.log(url);
+      // console.log(url);
       // this.toDisplay = !this.toDisplay;
       this.toDisplay = true;
       this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
       return this.safeUrl
     }
-    
-      }
+
+    public showUrlNotSecure(url:String): String {
+      this.toDisplay = !this.toDisplay;
+      return url;
+    }
+
+  }

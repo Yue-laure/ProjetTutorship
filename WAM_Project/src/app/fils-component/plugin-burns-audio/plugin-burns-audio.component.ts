@@ -12,7 +12,7 @@ export class PluginBurnsAudioComponent {
   burnsTable=new Map();
   safeUrl!: SafeResourceUrl;
   toDisplay!: boolean;
-  
+
   constructor(public communSer:CommonService,private sanitizer: DomSanitizer){}
 
   async ngOnInit(){
@@ -21,7 +21,7 @@ export class PluginBurnsAudioComponent {
         var item=res.plugins[index]
         if(item.dirName.match('^burns-audio/[a-zA-Z0-9]*_?[a-zA-Z0-9]*'))
         {
-          this.burnsTable.set(item.name,"http://localhost:8010/"+item.dirName+"/index.js")
+          this.burnsTable.set(item.name,"http://localhost:8010/"+item.dirName+"/index.html")
           this.burnsList.push(item)
         }
         else
