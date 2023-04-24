@@ -2,6 +2,8 @@
  * Description: Plugin model  
  * Author : Ons HAMDI 
  */
+var aggregatePaginate = require("mongoose-aggregate-paginate-v2");
+
 var mongoose = require('mongoose');  
 var PluginSchema = new mongoose.Schema({  
   id: Number,
@@ -22,6 +24,6 @@ var PluginSchema = new mongoose.Schema({
   hasMidiOutput : Boolean,
 
 });
-
+PluginSchema.plugin(aggregatePaginate);
 
 module.exports = mongoose.model('Plugin', PluginSchema);

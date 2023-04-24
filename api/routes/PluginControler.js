@@ -1,6 +1,6 @@
 //let Assignment = require('../model/assignment');
 // Include fs module
-const MongoClient = require('mongodb').MongoClient;
+const MongoClient = require("mongodb").MongoClient;
 const fs = require("fs");
 const path = require("path");
 let Plugin = require("../model/PluginsModel");
@@ -16,10 +16,9 @@ function readPluginsFromDisk(dir, vendor) {
   console.log("getPlugins");
 
   let plugins = [];
-  
 
   //files = fs.readdirSync();
-  console.log("Building Repositiry.json...Reading " + pluginsDir + "...");
+  console.log("Building Repositiry.json...Reading " + dir + "...");
 
   fs.readdirSync(dir).forEach((name) => {
     var filePath = path.join(dir, name);
@@ -30,8 +29,9 @@ function readPluginsFromDisk(dir, vendor) {
       const descriptorPath = filePath + "/descriptor.json";
 
       let descriptor;
+      console.log("hhhhhhhhhhhhhhhhhhhhhhhhhh");
       if (fs.existsSync(descriptorPath)) {
-         descriptor = fs.readFileSync(descriptorPath, {
+        descriptor = fs.readFileSync(descriptorPath, {
           encoding: "utf8",
           flag: "r",
         });
@@ -40,7 +40,7 @@ function readPluginsFromDisk(dir, vendor) {
         // add the directory name to the descriptor
         descriptor.dirName = vendor + "/" + name;
 
-        console.log(descriptor)
+        console.log(descriptor);
 
         plugins.push(descriptor);
       }
@@ -49,25 +49,28 @@ function readPluginsFromDisk(dir, vendor) {
   return plugins;
 }
 
-
 async function getPlugins(req, res) {
+  var aggregateQuery = Plugin.aggregate();
   let repository = {
     name: "WAP Repo from Faust IDE",
     root: pluginsBaseDir,
     plugins: [],
   };
   Plugin.find((err, plugins) => {
-    if(err){
-        res.send(err)
+    if (err) {
+      res.send(err);
     } else {
       repository.plugins = plugins;
+      Plugin.aggregatePaginate(aggregateQuery,
+        {page : parseInt(req.query.page) || 1, limit : parseInt(req.query.limit)|| 20,}, 
+        (err, repository) => {
+          if (err) {
+            res.send(err);
+          } 
       res.json(repository);
+    });
     }
-
-   
-});
-
-// res.json(repository);
+  }); 
 }
 
 function getPlugin(req, res) {
@@ -105,7 +108,7 @@ function savePluginToDB(p) {
     if (err) {
       console.log("Can't post plugin : ", err);
     }
-    console.log("${plugin.name} saved! ");
+    console.log(`${plugin.name} saved! `);
   });
 }
 function postPlugin(req, res) {
@@ -181,21 +184,27 @@ function updatePlugin(req, res) {
 function putPluginsInDB(req, res) {
   console.log("here");
   // On parcours le dossier pluginsDir et on récupère les sous-dossiers
-  
+  fs.readdirSync(pluginsDir).forEach((name) => {
+    var filePath = path.join(pluginsDir, name);
+    var stat = fs.statSync(filePath);
 
-  const plugins = readPluginsFromDisk(pluginsDir);
- // console.log(plugins)
-  plugins.forEach((p) => {
-    const existingPlugin = Plugin.findOne({ identifier: p.identifier });
-   /* if (existingPlugin) {
+    if (stat.isFile()) {
+      console.log("Ignoring file : " + name);
+    } else if (stat.isDirectory()) {
+      const plugins = readPluginsFromDisk(filePath, name);
+      // console.log(plugins)
+      plugins.forEach((p) => {
+        const existingPlugin = Plugin.findOne({ identifier: p.identifier });
+        /* if (existingPlugin) {
       console.log(
         `Plugin with name ${p.identifier} already exists in the database`
       );
     } else {*/
-      savePluginToDB(p);
-   // }
+        savePluginToDB(p);
+        // }
+      });
+    }
   });
-
   res.send("All plugins saved to the database");
 }
 

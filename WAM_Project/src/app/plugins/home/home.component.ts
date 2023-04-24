@@ -1,97 +1,129 @@
-import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
+import { Plugins, Doc } from './../../shared/data-types/commun.types';
+import { AfterViewInit, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
-import axios from 'axios';
 import { CommonService } from "../../shared/common.service";
-// ­­import { WamHost } from "../../../assets/wamHost/wamHost.js"
+import { HttpClient } from '@angular/common/http';
+import {MatPaginator} from '@angular/material/paginator';
+import { merge, tap } from 'rxjs';
+import { Router } from '@angular/router';
+import { PluginActionService } from 'src/app/shared/plugin.action.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent {
-    @ViewChild('url',{static:true}) url!:ElementRef ;
-    pluginsList:Array<any>=[];
-    safeUrl!: SafeResourceUrl;
-    name!: String;
-    thumbnail!: String;
-    imgTable=new Map();
-    toDisplay!: boolean;
-    constructor(public communSer:CommonService,private sanitizer: DomSanitizer){}
+export class HomeComponent implements OnInit, AfterViewInit {
+  @ViewChild('url',{static:true}) url!:ElementRef ;
+  pluginsList:Array<any>=[];
 
-    async ngOnInit(){
-      this.communSer.getPlugins().then(async (res)=>{
-        //object dans object  n est pas stable ,si il n affiche pas ,utiliser les codes suivants
-        // for (let index = 0; index < res.plugins.length; index++) {
-        //   this.pluginsList.push(res.plugins[index])
-        // }
-        this.pluginsList=res.plugins
-        for (let index = 0; index < res.plugins.length; index++) {
-          var item=this.pluginsList[index]
-          if("http://localhost:8010/"+item.dirName+"/index.html")
-           var pluginUrl ="http://localhost:8010/"+item.dirName+"/index.html"
-           else
-           var pluginUrl ="please make sure index.html in the repo of plugins "
-      }
+  safeUrl!: SafeResourceUrl;
+  name!: String;
+  thumbnail!: String;
+  imgTable=new Map();
+  toDisplay!: boolean;
+
+  constructor(public communSer:CommonService,public actionSer:PluginActionService,private router:Router,private http: HttpClient,private sanitizer: DomSanitizer){}
+
+  dataSource:Plugins[]=[]
+  dataSource_length!:number
+  @ViewChild(MatPaginator) paginator!:MatPaginator;
+  ngOnInit(){
+
+      // 5 plugins par pageactionSer
+      this.actionSer.fetchData().subscribe(res=>{
+        console.log(res);
       })
-           //obtenir le lien de image en utilisant un dictionnaire
-           this.communSer.getPlugins().then(async (res)=>{
-            //object dans object  n est pas stable ,si il n affiche pas ,utiliser les codes suivants
-            // for (let index = 0; index < res.plugins.length; index++) {
-            //   this.pluginsList.push(res.plugins[index])
-            // }
-            this.pluginsList=res.plugins
-            for (let index = 0; index < res.plugins.length; index++) {
-              let httpUrl=this.communSer.host+'/'+res.plugins[index].dirName+'/descriptor.json'
-              let  result=await axios.get(httpUrl);
-              this.name=result.data.name
-              if (result.data.thumbnail)
+      this.communSer.getPlugins().subscribe(
+        (res)=>
+        {
+                  if (res && res.length > 0) {
+                    this.dataSource = res.slice(0, 5);
+                    this.dataSource_length = res.length;
+                  } else {
+                    console.error("Invalid response from getPlugins API:", res);
+                  }
+      }
+      )
+
+      //obtenir le lien de image en utilisant un dictionnaire
+      this.communSer.getPlugins().subscribe((res)=>
+          {
+            this.pluginsList=res
+            for (let index = 0; index < res.length; index++) {
+              let httpUrl=this.communSer.host+'/'+res[index].dirName+'/descriptor.json'
+              // this.http.get(httpUrl).subscribe((res)=>{
+              //   console.log(res);
+              // })
+              this.name=res[index].name
+              if (res[index].thumbnail)
                {
-                if (result.data.thumbnail=="screenshot.png")
+                //result.data.thumbnail est screenshot.png ou default.png
+                if (res[index].thumbnail=="screenshot.png")
                 {
-                  this.thumbnail=this.communSer.host+'/'+res.plugins[index].dirName+'/screenshot.png'
+                  this.thumbnail=this.communSer.host+'/'+res[index].dirName+'/screenshot.png'
                   }
                 else
                 {
-                  this.thumbnail=this.communSer.host+'/'+res.plugins[index].dirName+'/default.png'
+                  this.thumbnail=this.communSer.host+'/'+res[index].dirName+'/default.png'
                   }
                 this.imgTable.set(this.name,this.thumbnail)
               }
               // result.data.thumbnail est vide
-              else if (result.data.thumbnail=="")
+              else if (res[index].thumbnail=="")
               {
-                this.thumbnail=this.communSer.host+'/'+res.plugins[index].dirName+'/default.png'
+                this.thumbnail=this.communSer.host+'/'+res[index].dirName+'/default.png'
                 this.imgTable.set(this.name,this.thumbnail)
                 }
             }
               // console.log(this.imgTable)
               return this.imgTable
           } )
+    }
+
+  // pagenation
+  displayedColumns: string[] = ['id','name', 'dirName', 'description','thumbnail','Action'];
+  ngAfterViewInit(): void {
+          // throw new Error('Method not implemented.');
+          if (this.paginator) {
+            merge(this.paginator.page)
+              .pipe(
+                tap(() => this.next_page())
+              )
+              .subscribe();
+          }
         }
+  // next page
+  next_page():void{
+          this.communSer.getPlugins().subscribe((res)=>
+              {         console.log(this.paginator.pageIndex);
+                        console.log(this.paginator.pageSize);
+                        this.dataSource=res
+                        this.dataSource=this.dataSource.slice(this.paginator.pageIndex*this.paginator.pageSize,
+                                                              this.paginator.pageIndex*this.paginator.pageSize+this.paginator.pageSize)
+            }
+              )
+        }
+  // sauter a un plugin
+  public goToPluginDetail(dirName: string){
+     this.router.navigate(['/plugin-detail', dirName]);
+        }
+  // public getUrl(dirname: String) : String {
+  //     return `http://localhost:8010/${dirname}/index.js`;
+  //   }
+  // public getSafeUrl(dirname: string): SafeUrl {
+  //       const url = `http://localhost:8010/${dirname}/index.js`;
+  //       const trimmedUrl = url?.trim();
+  //       return this.sanitizer.bypassSecurityTrustUrl(url);
+  //   }
+  // public showUrl(url: string): SafeResourceUrl {
+  //     // console.log(url);
+  //     this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+  //     return this.safeUrl
+  //   }
+  // public showUrlNotSecure(url:String): String {
+  //     this.toDisplay = !this.toDisplay;
+  //     return url;
+  //   }
 
-
-    public getUrl(dirname: String) : String {
-      return `http://localhost:8010/${dirname}/index.js`;
-    }
-
-    public getSafeUrl(dirname: string): SafeUrl {
-        const url = `http://localhost:8010/${dirname}/index.js`;
-
-        const trimmedUrl = url?.trim();
-        return this.sanitizer.bypassSecurityTrustUrl(url);
-
-    }
-    public showUrl(url: string): SafeResourceUrl {
-      // console.log(url);
-      // this.toDisplay = !this.toDisplay;
-      this.toDisplay = true;
-      this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
-      return this.safeUrl
-    }
-
-    public showUrlNotSecure(url:String): String {
-      this.toDisplay = !this.toDisplay;
-      return url;
-    }
-
-  }
+}

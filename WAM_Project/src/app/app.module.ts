@@ -1,3 +1,4 @@
+import { MatTableModule } from '@angular/material/table';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
@@ -17,6 +18,8 @@ import { RecommandComponent } from './fils-component/recommand/recommand.compone
 import { PluginDetailComponent } from './plugins/plugin-detail/plugin-detail.component';
 
 import { MatMenuModule } from '@angular/material/menu';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 
 @NgModule({
@@ -35,6 +38,9 @@ import { MatMenuModule } from '@angular/material/menu';
     BrowserAnimationsModule,
     MatToolbarModule,MatIconModule,MatCardModule,MatFormFieldModule,FormsModule,
     MatMenuModule,
+    HttpClientModule,
+    MatTableModule,
+    MatPaginatorModule
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   providers: [],

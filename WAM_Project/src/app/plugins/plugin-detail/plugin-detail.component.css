@@ -1,4 +1,17 @@
-iframe{
-    width:500px; 
-    height: 450px;
+main{
+  max-width: 960px;
+  margin: 0 auto;
 }
+.mainDown {
+  transform: scale(0.75);
+  transform-origin: 20% 0;
+  /* overflow-x: auto; */
+}
+button{
+  border: none;
+}
+img{
+  width: 40px;
+  height: 40px;
+}
+

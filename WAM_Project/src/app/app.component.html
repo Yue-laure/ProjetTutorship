@@ -17,18 +17,13 @@
       <span class="search" id="searchIcon"></span>
     </div>
     <div class="navlogin">
-      <div  [routerLink]="['/login']" routerLink="router-link-active">Login in</div>
+      <div [routerLink]="['/login']" routerLink="router-link-active">Login in</div>
       <div [routerLink]="['']" routerLink="router-link-active">Sign in</div>
     </div>
     <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
       <mat-icon>favorite</mat-icon>
     </button>
-    <button mat-icon-button id="shareBtnFaceBook"  aria-label="Example icon-button with share icon">
-      <mat-icon>F Share  </mat-icon>
-    </button>
-    <button mat-icon-button id="shareBtnTwitter"  aria-label="Example icon-button with share icon">
-      <mat-icon>T Share  </mat-icon>
-    </button>
+
   </div>
 </header>
 <div class="main"><router-outlet></router-outlet></div>

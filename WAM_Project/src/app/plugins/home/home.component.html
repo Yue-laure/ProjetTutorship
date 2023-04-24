@@ -1,31 +1,72 @@
 <div class="main">
     <div class="mainLeft">
         <div class="pluginsList" >
-            <div class="pluginItem" *ngFor="let item of pluginsList ">
-                <h2> {{item.name}}</h2>
-                <h6>{{item.description}}</h6>
-                 <div  *ngIf="item.dirName.match('^wimmics/[a-zA-Z0-9]*_?[a-zA-Z0-9]*'); else dir" >
-                    <b id="wimmics">{{item.dirName}}</b><br>
-                    {{imgTable.get(item.name)}}
-                    <a #url [href]="getUrl(item.dirName)" style="display: none">{{'http://localhost:8010/'+item.dirName+'/index.html'}}</a>
-                    <button (click)="safeUrl=showUrlNotSecure(url.href)" ><img src="{{imgTable.get(item.name)}}" alt="image can not find"></button>
-                </div>
-                 <ng-template #dir >
-                    <b id="burns">{{item.dirName}}</b><br>
-                    {{imgTable.get(item.name)}}
-                    <a #url [href]="getUrl(item.dirName)" style="display: none">{{'http://localhost:8010/'+item.dirName+'/index.html'}}</a>
-                    <button  (click)="safeUrl=showUrlNotSecure(url.href)"> <img src="{{imgTable.get(item.name)}}" alt="image can not find"></button>
-                  </ng-template>
-                 <br>
+            <!-- <div class="pluginItem" *ngFor="let item of pluginsList "></div> -->
+            <div class="mat-elevation-z8">
+              <table mat-table [dataSource]="dataSource">
+                <!-- id Column -->
+                <ng-container matColumnDef="id">
+                  <th mat-header-cell *matHeaderCellDef> # </th>
+                  <td mat-cell *matCellDef="let element;let i = index"> <h2>{{i+1}}</h2> </td>
+                </ng-container>
 
-        </div>
+                <!-- name Column -->
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef> Name </th>
+                  <td mat-cell *matCellDef="let element"> <h2>{{element.name}}</h2> </td>
+                </ng-container>
+
+                <!-- dirName Column -->
+                <ng-container matColumnDef="dirName">
+                  <th mat-header-cell *matHeaderCellDef> dirName </th>
+                  <td mat-cell *matCellDef="let element">
+                      <div  *ngIf="element.dirName.match('^wimmics/[a-zA-Z0-9]*_?[a-zA-Z0-9]*'); else dir" >
+                        <b id="wimmics">{{element.dirName}}</b><br>
+                      </div>
+                      <ng-template #dir >
+                        <b id="burns">{{element.dirName}}</b><br>
+                      </ng-template>
+                   </td>
+                </ng-container>
+
+                <!-- description Column -->
+                <ng-container matColumnDef="description">
+                  <th mat-header-cell *matHeaderCellDef> description </th>
+                  <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+                </ng-container>
+
+                <!-- thumbnail Column -->
+                <ng-container matColumnDef="thumbnail">
+                  <th mat-header-cell *matHeaderCellDef> thumbnail【Click on the image for more details】</th>
+                  <td mat-cell *matCellDef="let element">
+                    <!-- <a #url [href]="getUrl(element.dirName)" style="display: none">{{'http://localhost:8010/'+element.dirName+'/index.html'}}</a> -->
+                    <!-- <button  (click)="safeUrl=showUrlNotSecure(url.href)"> <img src="{{imgTable.get(element.name)}}" alt="image can not find"></button> -->
+                    <a  (click)="goToPluginDetail(element.dirName)"> <img src="{{imgTable.get(element.name)}}" alt="image can not find"></a>
+                  </td>
+                </ng-container>
+
+                <!-- Action Column -->
+                <ng-container matColumnDef="Action">
+                  <th mat-header-cell *matHeaderCellDef> Action </th>
+                  <td mat-cell *matCellDef="let element"><div>Delete</div> <div>Edit</div>  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              </table>
+
+              <mat-paginator [length]="dataSource_length" [pageSizeOptions]="[5, 10, 20]"
+                             showFirstLastButtons
+                             aria-label="Select page of periodic elements">
+              </mat-paginator>
+            </div>
         </div>
     </div>
 
-    <div class="mainRight">
+    <!-- <div class="mainRight">
         <p>Please click on the image of  plugin!!!!</p>
         <div *ngIf="toDisplay" >
           <wam-plugin [src]="safeUrl"></wam-plugin>
         </div>
-    </div>
+    </div> -->
 </div>

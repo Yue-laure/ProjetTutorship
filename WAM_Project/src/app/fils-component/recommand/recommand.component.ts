@@ -15,18 +15,19 @@ export class RecommandComponent implements OnInit{
 
   ngOnInit(){
 
-    // console.log(this.pluginsList)
-      this.comSer.getRecommandPlugins().then((res)=>{
-              // console.log(res)
-              return res
-            // for (let index = 0; index< res.length; index++){
-            //   this.recommandsList.push(this.comSer.getPluginByDirName(res[index]))
-            // }
-      })
-  //     return this.recommandsList
-  //     this.comSer.getPluginByDirName(__dirname).then((res)=>{
-  //       console.log(res.data)
+
+  //   // console.log(this.pluginsList)
+  //     this.comSer.getRecommandPlugins().then((res)=>{
+  //             // console.log(res)
+  //             return res
+  //           // for (let index = 0; index< res.length; index++){
+  //           //   this.recommandsList.push(this.comSer.getPluginByDirName(res[index]))
+  //           // }
   //     })
+  // //     return this.recommandsList
+  // //     this.comSer.getPluginByDirName(__dirname).then((res)=>{
+  // //       console.log(res.data)
+  // //     })
   }
 
 }

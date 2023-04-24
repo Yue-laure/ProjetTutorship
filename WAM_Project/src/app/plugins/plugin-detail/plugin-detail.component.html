@@ -1,3 +1,24 @@
-<div>
-    <iframe [src]="safeUrl" frameborder="0"></iframe>
-</div>
+<main>
+  <div class="mainUp" >
+      <div *ngIf="pluginInfo">
+        {{ pluginInfo.dirName }}
+      </div>
+    <!-- partager -->
+    <div>
+      <b><span>Share this plugin to:</span></b>
+      <button  id="shareBtnFaceBook"  >
+        <img src="../../../assets/img/facebook.png" alt="Share to Facebook">
+      </button>
+      <button  id="shareBtnTwitter"  >
+        <img src="../../../assets/img/twitter.png" alt="Share to Twitter">
+      </button>
+    </div>
+
+  </div>
+
+
+  <div class="mainDown">
+    <a #url [href]="getSafeUrl(dirName)" style="display: none">{{'http://localhost:8010/'+dirName+'/index.js'}}</a>
+    <wam-plugin [src]="url.href"></wam-plugin>
+  </div>
+</main>

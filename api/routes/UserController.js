@@ -11,7 +11,15 @@ var User = require('../model/User');
  * Creates un new user
  */
 router.post('/', function (req, res) {
-    console.log("here");
+    User.findOne({email: req.body.email}, function (err, user) {
+        if (err) { 
+            return res.status(500).send("There was a problem finding the user.");
+        }    
+        if (user) {
+            return res.status(409).send("A user with that email already exists");
+        }
+    });
+    console.log("Creating user: " + req.body.username );
     User.create({
             username : req.body.username,
             email : req.body.email,

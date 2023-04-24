@@ -16,20 +16,20 @@ export class PluginBurnsAudioComponent {
   constructor(public communSer:CommonService,private sanitizer: DomSanitizer){}
 
   async ngOnInit(){
-    this.communSer.getPlugins().then(async (res)=>{
-      for (let index = 0; index < res.plugins.length; index++) {
-        var item=res.plugins[index]
-        if(item.dirName.match('^burns-audio/[a-zA-Z0-9]*_?[a-zA-Z0-9]*'))
-        {
-          this.burnsTable.set(item.name,"http://localhost:8010/"+item.dirName+"/index.html")
-          this.burnsList.push(item)
-        }
-        else
-         continue
-    }
-    })
-    // console.log( this.burnsList)
-    // console.log( this.burnsTable)
+    // this.communSer.getPlugins().then(async (res)=>{
+    //   for (let index = 0; index < res.plugins.length; index++) {
+    //     var item=res.plugins[index]
+    //     if(item.dirName.match('^burns-audio/[a-zA-Z0-9]*_?[a-zA-Z0-9]*'))
+    //     {
+    //       this.burnsTable.set(item.name,"http://localhost:8010/"+item.dirName+"/index.html")
+    //       this.burnsList.push(item)
+    //     }
+    //     else
+    //      continue
+    // }
+    // })
+    // // console.log( this.burnsList)
+    // // console.log( this.burnsTable)
     }
     public getSafeUrl(dirname: string): SafeUrl {
       const url = `http://localhost:8010/${dirname}/index.html`;
