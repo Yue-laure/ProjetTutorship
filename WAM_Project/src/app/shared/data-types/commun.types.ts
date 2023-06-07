@@ -1,3 +1,4 @@
+import { NzTableFilterFn, NzTableFilterList, NzTableSortFn, NzTableSortOrder } from 'ng-zorro-antd/table';
 
 export interface Doc {
   totalDocs: number;
@@ -12,7 +13,7 @@ export interface Plugins {
   description: string;
 }
 
-export interface Plugin {
+export interface PluginItem {
   id:number;
   name: string;
   dirName: string;
@@ -21,3 +22,12 @@ export interface Plugin {
 }
 
 
+export interface ColumnItem {
+  name: string;
+  sortOrder: NzTableSortOrder | null;
+  sortFn: NzTableSortFn<PluginItem> | null;
+  listOfFilter: NzTableFilterList;
+  filterFn: NzTableFilterFn<PluginItem> | null;
+  filterMultiple: boolean;
+  sortDirections: NzTableSortOrder[];
+}

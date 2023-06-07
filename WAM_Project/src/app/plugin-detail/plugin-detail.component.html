@@ -1,7 +1,8 @@
 <main>
   <div class="mainUp" >
       <div *ngIf="pluginInfo">
-        {{ pluginInfo.dirName }}
+        <span><h3>Name:</h3>{{ pluginInfo.name }}</span>
+        <span><h3>Directory Name:</h3>{{ pluginInfo.dirName }}</span>
       </div>
     <!-- partager -->
     <div>
@@ -18,7 +19,8 @@
 
 
   <div class="mainDown">
-    <a #url [href]="getSafeUrl(dirName)" style="display: none">{{'http://localhost:8010/'+dirName+'/index.js'}}</a>
-    <wam-plugin [src]="url.href"></wam-plugin>
+    <!-- <a #url [href]="getSafeUrl(dirName)" style="display: none">{{'http://localhost:8010/'+dirName+'/index.js'}}</a> -->
+    <a #url [href]="getSafeUrl(dirName)">{{'http://localhost:8010/'+dirName+'/index.js'}}</a>
+    <wam-plugin [src]="url.href"> </wam-plugin>
   </div>
 </main>

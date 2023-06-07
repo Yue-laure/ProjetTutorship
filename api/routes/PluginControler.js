@@ -13,6 +13,8 @@ let pluginsDirURL = "https://localhost:8080/…";
 tableau appelé plugins */
 
 function readPluginsFromDisk(dir, vendor) {
+  //dir : plugin directory
+
   console.log("getPlugins");
 
   let plugins = [];
@@ -29,7 +31,7 @@ function readPluginsFromDisk(dir, vendor) {
       const descriptorPath = filePath + "/descriptor.json";
 
       let descriptor;
-      console.log("hhhhhhhhhhhhhhhhhhhhhhhhhh");
+ 
       if (fs.existsSync(descriptorPath)) {
         descriptor = fs.readFileSync(descriptorPath, {
           encoding: "utf8",
@@ -103,7 +105,13 @@ function savePluginToDB(p) {
   console.log(p.dirName);
   console.log(" Plugin to save received : ");
   //console.log(plugin);
-
+  Plugin.findOne({identifier: plugin.identifier}, (err, p) => {
+    if (err) {
+      console.log("Can't post plugin : ", err);
+    }
+    if (p) {
+      console.log("Plugin already exists : ", p);
+    } else {  
   plugin.save((err) => {
     if (err) {
       console.log("Can't post plugin : ", err);
@@ -111,75 +119,52 @@ function savePluginToDB(p) {
     console.log(`${plugin.name} saved! `);
   });
 }
-function postPlugin(req, res) {
+});
+}
+function postPlugin(descriptor, callback) {
   let plugin = new Plugin();
-  plugin.id = req.body.id;
-  plugin.identifier = req.body.identifier;
-  plugin.name = req.body.name;
-  plugin.vendor = req.body.vendor;
-  plugin.description = req.body.description;
-  plugin.version = req.body.version;
-  plugin.apiVersion = req.body.apiVersion;
-  plugin.thumbnail = req.body.thumbnail;
-  plugin.keywords = req.body.keywords;
-  plugin.isInstrument = req.body.isInstrument;
-  plugin.website = req.body.website;
-  plugin.hasAudioInput = req.body.hasAudioInput;
-  plugin.hasAudioOutput = req.body.hasAudioOutput;
-  plugin.hasMidiInput = req.body.hasMidiInput;
-  plugin.hasMidiOutput = res.body.hasMidiOutput;
+  
+  plugin.id = descriptor.id;
+  plugin.identifier = descriptor.identifier;
+  plugin.name = descriptor.name;
+  plugin.vendor = descriptor.vendor;
+  plugin.description = descriptor.description;
+  plugin.version = descriptor.version;
+  plugin.apiVersion = descriptor.apiVersion;
+  plugin.thumbnail = descriptor.thumbnail;
+  plugin.keywords = descriptor.keywords;
+  plugin.isInstrument = descriptor.isInstrument;
+  plugin.website = descriptor.website;
+  plugin.hasAudioInput = descriptor.hasAudioInput;
+  plugin.hasAudioOutput = descriptor.hasAudioOutput;
+  plugin.hasMidiInput = descriptor.hasMidiInput;
+  plugin.hasMidiOutput = descriptor.hasMidiOutput;
+  plugin.dirName = descriptor.dirName;
 
-  console.log = "Post Plugin received : ";
+  console.log("Post Plugin received : ");
   console.log(plugin);
 
-  plugin.save((err) => {
+  Plugin.findOne({identifier: plugin.identifier}, (err, p) => {
     if (err) {
-      res.send("Can't post plugin : ", err);
+      console.log("Can't post plugin : ", err);
+      callback(err, null);
     }
-    res.json({ message: "${plugin.name} saved! " });
-  });
-}
-/*
-function postPlugin(plugin) {
-  let newPlugin = new Plugin(plugin);
-
-  return new Promise((resolve, reject) => {
-    newPlugin.save((err) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(newPlugin);
-      }
-    });
-  });
-}
-*/
-function deletePlugin(req, res) {
-  Plugin.findByIdAndRemove(req.params.id, (err, plugin) => {
-    if (err) {
-      res.send(err);
+    if (p) {
+      console.log("Plugin already exists : ", p);
+      callback(new Error(`${plugin.name} already exists`), null);
+    } else {  
+      plugin.save((err) => {
+        if (err) {
+          console.log("Can't post plugin : ", err);
+          callback(err, null);
+        }
+        console.log(`${plugin.name} saved! `);
+        callback(null, plugin);
+      });
     }
-    res.json({ message: `${pluginname.nom} deleted` });
   });
 }
 
-function updatePlugin(req, res) {
-  console.log("Update on plugin : ");
-  console.log(req.body);
-  Pluggin.findByIdAndUpdate(
-    res.body._id,
-    req.body,
-    { new: true },
-    (err, plugin) => {
-      if (err) {
-        console.log(err);
-        res.send(err);
-      } else {
-        res.json({ message: "${plugin.name} updated" });
-      }
-    }
-  );
-}
 
 function putPluginsInDB(req, res) {
   console.log("here");
@@ -208,11 +193,36 @@ function putPluginsInDB(req, res) {
   res.send("All plugins saved to the database");
 }
 
+
+function getKeywordsFromDB (req, res){
+  Plugin.distinct('keywords', function(err, keywords) {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Internal server error');
+    } else {
+      res.status(200).send(keywords);
+    }
+  });
+}
+  
+function getPluginsWithKeyWord (req,res) {
+ keyword =  req.query.keyword;
+  console.log("keyword received : " + keyword);
+  Plugin.find({keywords: keyword}, (err, plugins) => {
+    if (err) {
+      res.send(err);
+    }
+    res.json(plugins);
+  });
+}
+
 module.exports = {
   putPluginsInDB,
   getPlugins,
   getPlugin,
-  deletePlugin,
-  updatePlugin,
+
   postPlugin,
+  savePluginToDB,
+  getKeywordsFromDB,
+  getPluginsWithKeyWord,
 };

@@ -67,11 +67,17 @@ const prefix = '/api';
 
 app.route(prefix + '/plugins')
   .get(plugins.getPlugins)
-  .post(plugins.postPlugin)
-  .put(plugins.updatePlugin);
+  .post(plugins.postPlugin);
+ 
 
 app.route(prefix + '/buildDB')
   .get(plugins.putPluginsInDB);
+
+app.route(prefix+'/getKeyWords')
+.get(plugins.getKeywordsFromDB);
+
+app.route(prefix+'/getPluginsWithKeyWord')
+  .get(plugins.getPluginsWithKeyWord);
 
   /*
   app.get("/api/auth/username", (req, res) => { 
@@ -139,20 +145,29 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 app.post('/api/file', upload.single('file'), (req, res) => {
- 
+  
   console.log("File received ! Beginning to unzip...");
   const file = req.file;
+  //print name of fiLe
+  console.log("file name = " + file.originalname);
  const username = req.body.username;
- console.log("username = " + username);
-  const filePath = file.path ;
+ console.log("username =" + username);
+const filePath = file.path ;
  console.log("filePath = " + filePath);
 
  if (filePath.endsWith('.zip')) {
  fs.createReadStream(filePath) // lecture du fichier zip
- .pipe(unzipper.Extract({ path: './plugins/uploads/ ' + username
+ .pipe(unzipper.Extract({ path: './plugins/uploads/'+username
 }))
  .on('close', () => {
    console.log('File deziped !');
+   fs.unlink(filePath , (err) => {
+    if (err) {
+      console.error(err);
+    } else {
+      console.log('Zip file deleted !');
+    }
+  });
 
    res.status(204).end();
  })
@@ -164,20 +179,127 @@ app.post('/api/file', upload.single('file'), (req, res) => {
 } else {
 res.status(400).json({ error: 'The file is not a zip file !' });
 }
-fs.unlink(filePath, (err) => {
-  if (err) {
-    console.error(err);
-  } else {
-    console.log('Zip file deleted !');
-  }
-});
+
 
 });
 
 
 //// fin gestion upload
-//début gestion des workspaces 
+//début gestion des workspaces
 
+
+app.get('/api/workspace', (req, res) => {
+  //const username = req.params.username;
+   const username = req.query.username;
+  
+ 
+   console.log("get workspace for user " + username);
+  // console.log("get workspace for userq " + usernameq);
+   const filePath = './plugins/uploads/' + username ;
+ console.log("filePath = " + filePath);
+   fs.readdir(filePath, (err, files) => {
+     if (err) {
+       console.log("erreur de lecture du repertoire");
+       res.status(500).json({ error: err.message });
+     } else {
+       console.log("lecture du repertoire ok");
+       res.status(200).send(JSON.stringify(files));
+     }
+   });
+ });
+
+app.get('/api/workspace/share', (req, res) => {
+  const username = req.query.username;
+  const filename = req.query.file; 
+
+  const filePath = './plugins/uploads/' + username + '/' + filename;
+  console.log("filePath OF SHARING = " + filePath);
+  const descriptorPath = filePath + "/descriptor.json";
+
+  let descriptor;
+
+  if (fs.existsSync(descriptorPath)) {
+    descriptor = fs.readFileSync(descriptorPath, {
+      encoding: "utf8",
+      flag: "r",
+    });
+    // transform the string into a JSON object
+    descriptor = JSON.parse(descriptor);
+    // add the directory name to the descriptor
+    descriptor.dirName = 'uploads/'+username+'/'+filename;
+    plugins.postPlugin(descriptor, (err, plugin) => {
+      if (err) {
+        console.log("Can't post plugin : ", err);
+        if (err.message === `${descriptor.name} already exists`) {
+          res.status(409).json({ message: err.message });
+        } else {
+          res.status(500).json({ error: err.message });
+        }
+      } else {
+        console.log(`${descriptor.name} shared successfully`);
+        res.status(200).json({ message: `${descriptor.name} shared successfully` });
+      }
+    });
+  } else {
+    console.log("descriptor.json not found");
+    res.status(500).json({ error: "descriptor.json not found" });
+  }
+});
+app.get ('/api/workspace/delete', (req, res) => {
+  const username = req.query.username;
+  const filename = req.query.file;
+  const filePath = './plugins/uploads/' + username + '/' + filename;
+  if (fs.existsSync(filePath)) {
+  fs.rm(filePath, {recursive : true}, (err) => {
+    if (err) {
+      console.error(err);
+    } else {
+      console.log('File deleted !');
+    }
+  });
+  res.status(204).end();
+} else {
+  res.status(400).json({ error: 'The file does not exist !' });
+
+} });
+
+app.post('api/file/update', upload.single('file'), (req, res) => {
+  const username = req.body.username;
+  const file = req.file;
+  const filename = req.body.filename ;
+  const filePath = file.path ; 
+
+  if (filePath.endsWith('.zip')) {
+    fs.createReadStream(filePath) // lecture du fichier zip
+    .pipe(unzipper.Extract({ path: './plugins/uploads/'+username
+    }))
+    .on('close', () => {
+      console.log('File deziped !');
+      fs.unlink(filePath , (err) => {
+       if (err) {
+         console.error(err);
+       } else {
+         console.log('Zip file deleted !');
+       }
+     });
+   
+      res.status(204).end();
+    }
+    )
+    .on('error', (err) => {
+      console.log('Error while deziping : ' + err.message);
+      res.status(500).json({ error: err.message });
+    }
+    );
+    } else {
+    res.status(400).json({ error: 'The file is not a zip file !' });
+    }
+    //check if plugin is in DB, update discriptor if it is 
+   
+  });
+
+
+//// fin gestion des workspaces
 
 app.listen(port, "0.0.0.0");
 console.log('Serveur démarré sur http://localhost:' + port);

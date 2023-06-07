@@ -56,6 +56,7 @@ router.get('/logout', function(req, res) {
  * Register a new user
  */
 router.post('/register', function(req, res) {
+  console.log("Registering user: " + req.body.username);
   var { username, email, password } = req.body;
   if (!username || !email || !password) {
     return res.status(400).send("Bad parameters");
@@ -68,18 +69,15 @@ router.post('/register', function(req, res) {
       console.log("User with this email already exists");
       return res.status(409).send("User with this email already exists");
     }
-    if (User.findOne ({ username: username }, function(err, user) {
+   
+    User.findOne({ username: username }, function(err, userWithUsername) {
       if (err) {
         return res.status(500).send("Internal server error");
       }
-      if (user) {
+      if (userWithUsername) {
         console.log("User with this username already exists");
         return res.status(409).send("User with this username already exists");
       }
-  }));
-
- else {
-
 
   var hashedPassword = bcrypt.hashSync(password, 8);
   console.log("Creating user: " + req.body.name );
@@ -100,7 +98,8 @@ router.post('/register', function(req, res) {
 
     res.status(200).send({ auth: true, token: token });
   });
-}});
+});
+});
 });
 /** 
  * returns the current user
@@ -137,4 +136,25 @@ router.get('/all', function (req, res, next) {
   })  
 })
 
+router.delete("/delete", function(req, res, next) {
+
+  console.log("Deleting user: " + req.query.username);
+  this.username = req.query.username;
+  if (!this.username) {
+    return res.status(400).send("Bad parameters");
+  }
+  else {
+    User.findOneAndDelete({ username: this.username }, function(err, user) {
+      if(err) {
+        return res.status(500).send("Internal server error");
+      }
+      if(!user) return res.status(404).send("No user found");
+      else {
+        console.log("User deleted successfully");
+      res.status(200).send("User deleted successfully");
+      }
+  }
+  )
+}
+}) 
 module.exports = router;

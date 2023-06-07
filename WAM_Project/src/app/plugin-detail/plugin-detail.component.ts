@@ -1,14 +1,13 @@
-import { HttpClient } from '@angular/common/http';
-import { MatMenuTrigger } from '@angular/material/menu';
-import { Plugin } from './../../shared/data-types/commun.types';
-import { Component ,Input, ViewChild} from '@angular/core';
-import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
+import { Component, ViewChild } from '@angular/core';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { CommonService } from '../shared/common.service';
 import { ActivatedRoute } from '@angular/router';
-import { CommonService } from 'src/app/shared/common.service';
+import { MatMenuTrigger } from '@angular/material/menu';
+import { PluginItem } from '../shared/data-types/commun.types';
 
 @Component({
   selector: 'app-plugin-detail',
-  templateUrl:    './plugin-detail.component.html',
+  templateUrl: './plugin-detail.component.html',
   styleUrls: ['./plugin-detail.component.css']
 })
 export class PluginDetailComponent {
@@ -17,7 +16,7 @@ export class PluginDetailComponent {
   @ViewChild(MatMenuTrigger) menuTrigger!: MatMenuTrigger;
   SafeUrl!: SafeUrl;
   url!: string;
-  pluginInfo!:Plugin;
+  pluginInfo!:PluginItem;
 
   onMenuItemClick() {
     this.menuTrigger.openMenu();
@@ -45,7 +44,7 @@ export class PluginDetailComponent {
      * @param h
      * @returns {Window}
      */
-        function popupwindow(url: string , title: string | undefined, w:  number, h: number) {
+    function popupwindow(url: string , title: string | undefined, w:  number, h: number) {
           let wLeft:number
           let wTop:number
           wLeft = window.screenLeft ? window.screenLeft : window.screenX;
@@ -59,14 +58,14 @@ export class PluginDetailComponent {
           let dom1=<HTMLButtonElement>document.getElementById('shareBtnFaceBook')
           let dom2=<HTMLButtonElement>document.getElementById('shareBtnTwitter')
           dom1.onclick=  () => {
-          var shareUrl = "http://www.facebook.com/sharer/sharer.php?u="+this.SafeUrl+"/question/1";
-          // var shareUrl = "http://www.facebook.com/sharer/sharer.php?u=https://github.com/micbuffa/wam-community/question/1";
+          // var shareUrl = "http://www.facebook.com/sharer/sharer.php?u="+this.SafeUrl+"/question/1";
+          var shareUrl = "http://www.facebook.com/sharer/sharer.php?u=https://github.com/micbuffa/wam-community/question/1";
           popupwindow(shareUrl, 'facebook', 600, 400);
       }
       dom2.onclick= () => {
-      //       var shareUrl = 'http://twitter.com/share?url=' + encodeURIComponent('https://github.com/micbuffa/wam-community') ;
-      var shareUrl = 'http://twitter.com/share?url=' + encodeURIComponent(`${this.SafeUrl}`) ;
-      popupwindow(shareUrl, 'facebook', 600, 400);
+            var shareUrl = 'http://twitter.com/share?url=' + encodeURIComponent('https://github.com/micbuffa/wam-community') ;
+      // var shareUrl = 'http://twitter.com/share?url=' + encodeURIComponent(`${this.SafeUrl}`) ;
+      popupwindow(shareUrl, 'twitter', 600, 400);
     }
   }
   }
@@ -87,3 +86,4 @@ export class PluginDetailComponent {
   //   }
 
 }
+

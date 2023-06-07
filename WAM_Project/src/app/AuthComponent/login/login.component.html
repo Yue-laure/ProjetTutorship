@@ -1,16 +1,15 @@
-<form ngForm (submit)="login(); loginForm.reset()" #loginForm class="connectForm" >
-    <mat-form-field>
-        
-        <input matInput [(ngModel)]="email" name="email" placeholder="Votre email" required>
-    </mat-form-field> 
 
+  <div class="spotify-form">
+    <form ngForm (submit)="login(); loginForm.reset()" #loginForm class="connectForm">
+      <div class="form-group">
         <mat-form-field>
-        <input matInput [(ngModel)]="password" name="password" placeholder="Votre mot de passe" required>
-   
-    </mat-form-field> 
-
-<button mat-stroked-button color = "primary"> 
-    Connexion
-</button>
-
-</form>
+          <input matInput [(ngModel)]="email" name="email" placeholder="Your email" required>
+        </mat-form-field>
+        <mat-form-field>
+          <input type = "password" matInput [(ngModel)]="password" name="password" placeholder="Your password" required>
+        </mat-form-field>
+        <button mat-stroked-button color="primary" class="submit-btn">Connexion</button>
+    </div>
+    </form>
+    <a href="/sign-up">Click here to register</a>
+  </div>
